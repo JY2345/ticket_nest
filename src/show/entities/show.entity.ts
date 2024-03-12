@@ -1,24 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, Index } from 'typeorm';
 
 
-@Entity({ name: 'seats' })
-export class Seat {
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Column({ type: 'varchar', nullable: false })
-    grade: string; 
-
-    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
-    price: number; 
-
-    @Column({ type: 'varchar', nullable: false })
-    seatNumber: string; 
-
-    @ManyToOne(() => Show, show => show.seats)
-    show: Show; 
-}
-
 @Entity({
     name: 'shows',
 })
@@ -47,6 +29,23 @@ export class Show {
 
     @OneToMany(() => Seat, seat => seat.show)
     seats: Seat[]; 
+}
+@Entity({ name: 'seats' })
+export class Seat {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column({ type: 'varchar', nullable: false })
+    grade: string; 
+
+    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
+    price: number; 
+
+    @Column({ type: 'varchar', nullable: false })
+    seatNumber: string; 
+
+    @ManyToOne(() => Show, show => show.seats)
+    show: Show; 
 }
 
 @Entity({
