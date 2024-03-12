@@ -1,7 +1,12 @@
 import { Type } from 'class-transformer';
 import { ValidateNested, IsString, IsNotEmpty, IsArray } from 'class-validator';
 import { PickType } from '@nestjs/mapped-types';
-import { Show,Seat,ShowDate } from '../entities/show.entity';
+import { Show, Seat, ShowDate } from '../entities/show.entity';
+
+class ShowDateDto {
+  @IsNotEmpty()
+  datetime: Date;
+}
 
 export class CreateShowDto extends PickType(Show, [
   'showName',
@@ -25,17 +30,17 @@ export class CreateShowDto extends PickType(Show, [
 
   @IsString()
   category: string;
-  
+
   @IsString()
   image: string;
-  
-  @IsArray() 
-  @ValidateNested({ each: true }) 
-  @Type(() => ShowDate) 
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ShowDate)
   dates: ShowDate[];
 
-  @IsArray() 
-  @ValidateNested({ each: true }) 
-  @Type(() => Seat) 
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Seat)
   seats: Seat[];
 }

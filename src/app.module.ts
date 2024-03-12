@@ -8,6 +8,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { User } from './user/entities/user.entity';
 import { UserModule } from './user/user.module';
+import { Show, ShowDate, Seat } from './show/entities/show.entity';
 import { ShowModule } from './show/show.module';
 
 const typeOrmModuleOptions = {
@@ -21,7 +22,7 @@ const typeOrmModuleOptions = {
     host: configService.get('DB_HOST'),
     port: configService.get('DB_PORT'),
     database: configService.get('DB_NAME'),
-    entities: [User], // 엔티티는 반드시 여기에 명시!
+    entities: [User, Show, ShowDate, Seat],
     synchronize: configService.get('DB_SYNC'),
     logging: true,
   }),
