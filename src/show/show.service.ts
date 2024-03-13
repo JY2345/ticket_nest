@@ -14,20 +14,16 @@ export class ShowService {
     private seatRepository: Repository<Seat>,
   ) {}
 
-  async create(createShowDto: CreateShowDto): Promise<Show> {
+  async registShow(createShowDto: CreateShowDto): Promise<Show> {
     const show = this.showRepository.create({
       ...createShowDto,
-      seats: [],
+      dates: createShowDto.dates.map((date) => ({
+        ...date,
+      })),
+      seats: createShowDto.seats.map((seat) => ({
+        ...seat,
+      })),
     });
-
-    const seats = createShowDto.seats.map((seatDto) => {
-      let seat = this.seatRepository.create({
-        ...seatDto,
-        show: show,
-      });
-      return seat;
-    });
-    show.seats = await this.seatRepository.save(seats);
 
     await this.showRepository.save(show);
     return show;

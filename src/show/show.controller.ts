@@ -12,15 +12,16 @@ import { ShowService } from './show.service';
 import { CreateShowDto } from './dto/create-show.dto';
 import { UpdateShowDto } from './dto/update-show.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { AdminGuard } from '../auth/admin.guard';
 
 @Controller('show')
 export class ShowController {
   constructor(private readonly showService: ShowService) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), AdminGuard)
   @Post('regist')
   create(@Body() createShowDto: CreateShowDto) {
-    return this.showService.create(createShowDto);
+    return this.showService.registShow(createShowDto);
   }
 
   @Get()
