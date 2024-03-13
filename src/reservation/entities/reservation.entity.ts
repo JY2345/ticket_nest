@@ -13,9 +13,9 @@ export class Reservation {
   show: Show;
 
   @Column({ type: 'timestamp', nullable: false })
-  reservationTime: Date;
+  reservation_time: Date;
 
   @Column({ type: 'varchar', nullable: true })
-  seatNumber: string;
+  seat_number: string;
 
 }
