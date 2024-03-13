@@ -10,6 +10,7 @@ import { User } from './user/entities/user.entity';
 import { UserModule } from './user/user.module';
 import { Show, ShowDate, Seat } from './show/entities/show.entity';
 import { ShowModule } from './show/show.module';
+import { ReservationModule } from './reservation/reservation.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -47,6 +48,7 @@ const typeOrmModuleOptions = {
     AuthModule,
     UserModule,
     ShowModule,
+    ReservationModule,
   ],
   controllers: [],
   providers: [],

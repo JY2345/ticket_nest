@@ -21,6 +21,7 @@ export class UserController {
     return await this.userService.signup(
       createUserDto.email,
       createUserDto.password,
+      createUserDto.point,
       createUserDto.is_admin,
     );
   }
