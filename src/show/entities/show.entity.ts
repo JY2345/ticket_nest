@@ -6,6 +6,8 @@ import {
   ManyToOne,
   Index,
 } from 'typeorm';
+import { Reservation } from '../../reservation/entities/reservation.entity'; 
+
 
 @Entity({
   name: 'shows',
@@ -39,6 +41,10 @@ export class Show {
     cascade: true,
   })
   seats: Seat[];
+
+  @OneToMany(() => Reservation, reservation => reservation.show)
+reservations: Reservation[];
+
 }
 @Entity({ name: 'seats' })
 export class Seat {
@@ -56,6 +62,7 @@ export class Seat {
 
   @ManyToOne(() => Show, (show) => show.seats)
   show: Show;
+  
 }
 
 @Entity({

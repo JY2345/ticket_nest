@@ -33,8 +33,8 @@ export class ShowService {
     if (showName) {
       return await this.showRepository.find({
         where: {
-          showName: showName
-        }
+          showName: showName,
+        },
       });
     } else {
       return await this.showRepository.find();

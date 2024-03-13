@@ -1,11 +1,28 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
+import { Reservation } from './entities/reservation.entity';
 
 @Injectable()
 export class ReservationService {
-  create(createReservationDto: CreateReservationDto) {
-    return 'This action adds a new reservation';
+  constructor(
+    @InjectRepository(Reservation)
+    private reservationRepository: Repository<Reservation>
+  ) {}
+
+  /**
+   * 예매하기
+   * @param createReservationDto 
+   */
+  async reserve(createReservationDto: CreateReservationDto) : Promise<Reservation> {
+    const reservation = this.reservationRepository.create({
+      ...createReservationDto
+    });
+
+    await this.reservationRepository.save(reservation);
+    return reservation;
   }
 
   findAll() {

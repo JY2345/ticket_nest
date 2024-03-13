@@ -20,14 +20,19 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signup(email: string, password: string, point:number, is_admin: boolean) {
+  async signup(
+    email: string,
+    password: string,
+    point: number,
+    is_admin: boolean,
+  ) {
     const existingUser = await this.findByEmail(email);
     if (existingUser) {
       throw new ConflictException(
         '이미 해당 이메일로 가입된 사용자가 있습니다!',
       );
     }
-    
+
     const hashedPassword = await hash(password, 10);
     await this.userRepository.save({
       email,
@@ -50,7 +55,7 @@ export class UserService {
       throw new UnauthorizedException('비밀번호를 확인해주세요.');
     }
 
-    const payload = { email, sub: user.id, is_admin: user.is_admin  };
+    const payload = { email, sub: user.id, is_admin: user.is_admin };
     return {
       access_token: this.jwtService.sign(payload),
     };
