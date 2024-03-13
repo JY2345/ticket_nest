@@ -19,7 +19,7 @@ class SeatDto {
 
 export class CreateShowDto {
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({message: "공연명을 입력하세요."})
   showName: string;
 
   @IsString()

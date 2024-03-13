@@ -30,10 +30,14 @@ export class Show {
   @Column({ type: 'text', nullable: true })
   image: string;
 
-  @OneToMany(() => ShowDate, (showDate) => showDate.show)
+  @OneToMany(() => ShowDate, (showDate) => showDate.show, {
+    cascade: true,
+  })
   dates: ShowDate[];
 
-  @OneToMany(() => Seat, (seat) => seat.show)
+  @OneToMany(() => Seat, (seat) => seat.show, {
+    cascade: true,
+  })
   seats: Seat[];
 }
 @Entity({ name: 'seats' })
