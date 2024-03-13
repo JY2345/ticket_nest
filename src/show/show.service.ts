@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Show, Seat } from './entities/show.entity';
@@ -29,12 +29,24 @@ export class ShowService {
     return show;
   }
 
-  findAll() {
-    return `This action returns all show`;
+  async findAll(showName?: string) {
+    if (showName) {
+      return await this.showRepository.find({
+        where: {
+          showName: showName
+        }
+      });
+    } else {
+      return await this.showRepository.find();
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} show`;
+  async findOne(id: number) {
+    const show = await this.showRepository.findOneBy({ id });
+    if (!show) {
+      throw new NotFoundException('해당 공연이 없습니다.');
+    }
+    return show;
   }
 
   update(id: number, updateShowDto: UpdateShowDto) {

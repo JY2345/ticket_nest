@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Body,
+  Query, 
   Patch,
   Param,
   Delete,
@@ -24,9 +25,9 @@ export class ShowController {
     return this.showService.registShow(createShowDto);
   }
 
-  @Get()
-  findAll() {
-    return this.showService.findAll();
+  @Get('shows-list')
+  findAll(@Query('showName') showName?: string) {
+    return this.showService.findAll(showName);
   }
 
   @Get(':id')

@@ -20,6 +20,9 @@ export class User {
   @Column({ type: 'varchar', select: false, nullable: false })
   password: string;
 
+  @Column({ type: 'int', default : 0, nullable: false })
+  point: number;
+
   @Column({ type: 'boolean', nullable: false, default: false })
   is_admin: boolean;
 }
