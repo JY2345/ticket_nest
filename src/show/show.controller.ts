@@ -26,8 +26,8 @@ export class ShowController {
   }
 
   @Get('shows-list')
-  findAll(@Query('showName') showName?: string) {
-    return this.showService.findAll(showName);
+  findAll(@Query('show_name') show_name?: string) {
+    return this.showService.findAll(show_name);
   }
 
   @Get(':id')

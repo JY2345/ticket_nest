@@ -17,23 +17,28 @@ export class ShowService {
   async registShow(createShowDto: CreateShowDto): Promise<Show> {
     const show = this.showRepository.create({
       ...createShowDto,
-      dates: createShowDto.dates.map((date) => ({
-        ...date,
-      })),
-      seats: createShowDto.seats.map((seat) => ({
-        ...seat,
-      })),
+      dates: createShowDto.dates.map((date) => ({ ...date })),
     });
-
+  
     await this.showRepository.save(show);
+  
+    if (!createShowDto.is_free_seating) {
+      const seats = createShowDto.seats.map((seat) => this.seatRepository.create({
+        ...seat,
+        show, // 현재 저장된 Show 엔티티에 대한 참조
+      }));
+  
+      await this.seatRepository.save(seats);
+    }
+  
     return show;
   }
 
-  async findAll(showName?: string) {
-    if (showName) {
+  async findAll(show_name?: string) {
+    if (show_name) {
       return await this.showRepository.find({
         where: {
-          showName: showName,
+          show_name: show_name,
         },
       });
     } else {

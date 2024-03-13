@@ -3,6 +3,8 @@ import { ReservationService } from './reservation.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { UserInfo } from '../utils/userInfo.decorator';
+import { User } from '../user/entities/user.entity';
 
 @Controller('reservation')
 export class ReservationController {
@@ -10,7 +12,8 @@ export class ReservationController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('reserve')
-  create(@Body() createReservationDto: CreateReservationDto) {
+  create(@UserInfo() user: User, @Body() createReservationDto: CreateReservationDto) {
+    createReservationDto.user_id = user.id;
     return this.reservationService.reserve(createReservationDto);
   }
 
