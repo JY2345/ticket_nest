@@ -14,12 +14,14 @@ import { CreateShowDto } from './dto/create-show.dto';
 import { UpdateShowDto } from './dto/update-show.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AdminGuard } from '../auth/admin.guard';
-
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+@ApiTags('공연 정보')
 @Controller('show')
 export class ShowController {
   constructor(private readonly showService: ShowService) {}
 
   @UseGuards(AuthGuard('jwt'), AdminGuard)
+  @ApiBearerAuth('access-token')
   @Post('regist')
   create(@Body() createShowDto: CreateShowDto) {
     return this.showService.registShow(createShowDto);
