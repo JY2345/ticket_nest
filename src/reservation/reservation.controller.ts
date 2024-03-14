@@ -21,6 +21,12 @@ export class ReservationController {
   findAll() {
     return this.reservationService.findAll();
   }
+  
+  @UseGuards(AuthGuard('jwt'))
+  @Get('find-user-reservations')
+  async findUserReservations(@UserInfo() user: User) {
+    return await this.reservationService.findReservationByLoginUser(+user.id);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
