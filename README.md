@@ -30,6 +30,7 @@
 - DB_SYNC
 - JWT_SECRET_KEY
 
- ### ✒ API 명세서 URL
- - https://serious-airedale-c1e.notion.site/31eac16ad5c140dcb73391ee89f06580?v=50a5eb2d3bc24db9bc2f1bc1745b9714&pvs=4
+ ### ✒ 문서
+ - API : https://serious-airedale-c1e.notion.site/31eac16ad5c140dcb73391ee89f06580?v=50a5eb2d3bc24db9bc2f1bc1745b9714&pvs=4
+ - Swagger : http://52.79.227.251:3000/api
 
