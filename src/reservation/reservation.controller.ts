@@ -20,6 +20,12 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
+  /**
+   * 예매하기
+   * @param user
+   * @param createReservationDto 
+   * @returns 
+   */
   @UseGuards(AuthGuard('jwt'))
   @Post('reserve')
   create(
@@ -30,6 +36,11 @@ export class ReservationController {
     return this.reservationService.reserve(createReservationDto);
   }
 
+  /**
+   * 내 예매 확인
+   * @param user
+   * @returns 
+   */
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth('access-token')
   @Get('find-user-reservations')
@@ -37,7 +48,12 @@ export class ReservationController {
     return await this.reservationService.findReservationByLoginUser(+user.id);
   }
 
-
+  /**
+   * 예매 취소
+   * @param user 
+   * @param id 
+   * @returns 
+   */
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth('access-token')
   @Delete(':id')

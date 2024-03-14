@@ -102,9 +102,6 @@ export class ReservationService {
       },
     });
   }
-
-
-
   
   /**
    * 예매 삭제 및 포인트 환불
