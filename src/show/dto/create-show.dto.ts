@@ -26,14 +26,27 @@ class SeatDto {
 }
 
 export class CreateShowDto {
+  
+  /**
+   * 공연명
+   * @example "레미제라블"
+   */
   @IsString()
   @IsNotEmpty({ message: '공연명을 입력하세요.' })
   show_name: string;
 
+  /**
+   * 공연 내용
+   * @example "한국에서는 장발장으로 출판되기도"
+   */
   @IsString()
   @IsNotEmpty({ message: '공연 내용을 입력하세요.' })
   show_info: string;
 
+  /**
+   * 장소
+   * @example "국립극장"
+   */
   @IsString()
   venue: string;
 

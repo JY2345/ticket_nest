@@ -14,7 +14,8 @@ import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UserInfo } from '../utils/userInfo.decorator';
 import { User } from '../user/entities/user.entity';
-
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+@ApiTags('예약 정보')
 @Controller('reservation')
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
@@ -29,31 +30,16 @@ export class ReservationController {
     return this.reservationService.reserve(createReservationDto);
   }
 
-  @Get()
-  findAll() {
-    return this.reservationService.findAll();
-  }
-
   @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth('access-token')
   @Get('find-user-reservations')
   async findUserReservations(@UserInfo() user: User) {
     return await this.reservationService.findReservationByLoginUser(+user.id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reservationService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateReservationDto: UpdateReservationDto,
-  ) {
-    return this.reservationService.update(+id, updateReservationDto);
-  }
 
   @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth('access-token')
   @Delete(':id')
   cancelReservation(
     @UserInfo() user: User,

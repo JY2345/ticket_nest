@@ -103,17 +103,7 @@ export class ReservationService {
     });
   }
 
-  findAll() {
-    return `This action returns all reservation`;
-  }
 
-  findOne(id: number) {
-    return `This action returns a #${id} reservation`;
-  }
-
-  update(id: number, updateReservationDto: UpdateReservationDto) {
-    return `This action updates a #${id} reservation`;
-  }
 
   
   /**

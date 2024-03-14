@@ -1,0 +1,10 @@
+### 회원가입
+POST http://localhost:3000/user/signup
+Content-Type: application/json
+
+{
+	"email" : "user@email.com",
+	"password" : "1234",
+	"point" : 1000000,
+	"is_admin" : false
+}
