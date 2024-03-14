@@ -24,59 +24,58 @@ export class ReservationService {
    * 예매하기
    * @param createReservationDto 
    */
-  async reserve(createReservationDto: CreateReservationDto) : Promise<Reservation> {
-    
-    const { user_id, show_id, seat_number, reservation_time } = createReservationDto;
-    
-    const user = await this.userRepository.findOneBy({ id: user_id });
-
-    const show = await this.showRepository.findOneBy({ id: show_id });
-    if (!show) {
-      throw new NotFoundException('해당 공연을 찾을 수 없습니다.');
-    }
-
-    let ticketPrice = show.free_seating_price;
-    if (!show.is_free_seating) {
-      const seat = await this.seatRepository.findOne({
-        where: { 
-          show: { id: show_id }, 
-          seat_number 
-        },
+  async reserve(createReservationDto: CreateReservationDto): Promise<Reservation> {
+    return await this.seatRepository.manager.transaction(async (manager) => {
+      const { user_id, show_id, seat_number, reservation_time } = createReservationDto;
+  
+      const seat = await manager.findOne(Seat, {
+        where: { show: { id: show_id }, seat_number: seat_number },
+        lock: { mode: 'pessimistic_write' },
       });
+  
       if (!seat) {
         throw new NotFoundException('해당 공연에 지정된 좌석이 없습니다.');
       }
-      ticketPrice = seat.price;
-    }
+  
+      const existingReservation = await this.reservationRepository.findOne({
+        where: { show: { id: show_id }, seat_number: seat_number },
+      });
 
-    if (user.point < ticketPrice) {
-      throw new ConflictException('보유 포인트가 부족하여 예매할 수 없습니다.');
-    }
-
-    const existingReservation = await this.reservationRepository.findOne({
-      where: {
-        show: { id: show_id },
-        seat_number,
-      },
+      if (existingReservation) {
+        throw new ConflictException('해당 좌석은 이미 예매되었습니다.');
+      }
+  
+      const user = await this.userRepository.findOneBy({ id: user_id });
+      if (!user) {
+        throw new NotFoundException('사용자를 찾을 수 없습니다.');
+      }
+  
+      const show = await this.showRepository.findOneBy({ id: show_id });
+      if (!show) {
+        throw new NotFoundException('해당 공연을 찾을 수 없습니다.');
+      }
+  
+      let ticketPrice = seat.price;
+  
+      if (user.point < ticketPrice) {
+        throw new ConflictException('보유 포인트가 부족하여 예매할 수 없습니다.');
+      }
+  
+      const newReservation = manager.create(Reservation, {
+        user,
+        show,
+        seat,
+        reservationTime: reservation_time,
+      });
+      await manager.save(newReservation);
+  
+      user.point -= ticketPrice;
+      await manager.save(user);
+  
+      return newReservation;
     });
-    if (existingReservation) {
-      throw new ConflictException('해당 좌석은 이미 예매되었습니다.');
-    }
-
-    const reservation = this.reservationRepository.create({
-      user: user,
-      show: show,
-      reservation_time: reservation_time, 
-      seat_number: seat_number, 
-    });
-
-    await this.reservationRepository.save(reservation);
-
-    user.point -= ticketPrice;
-    await this.userRepository.save(user);
-
-    return reservation;  
   }
+  
 
   /**
    * 나의 예약 목록

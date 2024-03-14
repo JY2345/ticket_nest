@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Show, Seat } from './entities/show.entity';
+import { Reservation } from '../reservation/entities/reservation.entity';
 import { CreateShowDto } from './dto/create-show.dto';
 import { UpdateShowDto } from './dto/update-show.dto';
 
@@ -12,6 +13,8 @@ export class ShowService {
     private showRepository: Repository<Show>,
     @InjectRepository(Seat)
     private seatRepository: Repository<Seat>,
+    @InjectRepository(Reservation)
+    private readonly reservationRepository: Repository<Reservation>,
   ) {}
 
   async registShow(createShowDto: CreateShowDto): Promise<Show> {
@@ -25,7 +28,7 @@ export class ShowService {
     if (!createShowDto.is_free_seating) {
       const seats = createShowDto.seats.map((seat) => this.seatRepository.create({
         ...seat,
-        show, // 현재 저장된 Show 엔티티에 대한 참조
+        show, 
       }));
   
       await this.seatRepository.save(seats);
@@ -53,6 +56,30 @@ export class ShowService {
     }
     return show;
   }
+
+  async findAvailableSeats(showId: number): Promise<any[]> {
+    
+    const allSeats = await this.seatRepository.find({
+      where: { show: { id: showId } },
+    });  
+
+    const reservedSeats = await this.reservationRepository.find({
+      where: { show: { id: showId } },
+      select: ['seat_number'], 
+    });
+    const reservedSeatNumbers = reservedSeats.map((reservation) => reservation.seat_number);
+  
+    const availableSeats = allSeats.filter(
+      (seat) => !reservedSeatNumbers.includes(seat.seat_number) 
+    ).map((seat) => ({
+      seat_num: seat.seat_number, 
+      grade: seat.grade,
+      price: seat.price,
+    }));
+  
+    return availableSeats;
+  }
+
 
   update(id: number, updateShowDto: UpdateShowDto) {
     return `This action updates a #${id} show`;
