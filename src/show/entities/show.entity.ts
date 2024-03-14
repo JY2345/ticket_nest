@@ -56,7 +56,7 @@ export class Seat {
   @Column({ type: 'varchar', nullable: false })
   grade: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
+  @Column({ type: 'int', nullable: false })
   price: number;
 
   @Column({ type: 'varchar', nullable: false })

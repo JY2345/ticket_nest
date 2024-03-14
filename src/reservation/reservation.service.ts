@@ -40,7 +40,12 @@ export class ReservationService {
         lock: { mode: 'pessimistic_write' },
       });
 
-      if (!seat) {
+      const show = await this.showRepository.findOneBy({ id: show_id });
+      if (!show) {
+        throw new NotFoundException('해당 공연을 찾을 수 없습니다.');
+      }
+
+      if (!seat && !show.is_free_seating) {
         throw new NotFoundException('해당 공연에 지정된 좌석이 없습니다.');
       }
 
@@ -57,13 +62,12 @@ export class ReservationService {
         throw new NotFoundException('사용자를 찾을 수 없습니다.');
       }
 
-      const show = await this.showRepository.findOneBy({ id: show_id });
-      if (!show) {
-        throw new NotFoundException('해당 공연을 찾을 수 없습니다.');
+      let ticketPrice = show.is_free_seating ? show.free_seating_price : seat?.price;
+
+      if (!ticketPrice) {
+        throw new Error('티켓 가격을 결정할 수 없습니다.');
       }
-
-      let ticketPrice = seat.price;
-
+      
       if (user.point < ticketPrice) {
         throw new ConflictException(
           '보유 포인트가 부족하여 예매할 수 없습니다.',
@@ -131,19 +135,25 @@ export class ReservationService {
       if (!reservation) {
         throw new NotFoundException('예약 정보를 찾을 수 없습니다.');
       }
-  
-      const seat = await manager.findOne(Seat, {
-        where: {
-          show: { id: reservation.show.id },
-          seat_number: reservation.seat_number
+
+      let refundPoints = reservation.show.free_seating_price;
+      if(!reservation.show.is_free_seating){
+        const seat = await manager.findOne(Seat, {
+          where: {
+            show: { id: reservation.show.id },
+            seat_number: reservation.seat_number
+          }
+        });
+    
+        if (!seat) {
+          throw new NotFoundException('좌석 정보를 찾을 수 없습니다.');
         }
-      });
-  
-      if (!seat) {
-        throw new NotFoundException('좌석 정보를 찾을 수 없습니다.');
+        refundPoints = seat.price;
       }
-  
-      const refundPoints = seat.price;
+
+      if (!refundPoints) {
+        throw new Error('환불 가격을 결정할 수 없습니다.');
+      }
   
       reservation.user.point += refundPoints;
       await manager.save(reservation.user);
