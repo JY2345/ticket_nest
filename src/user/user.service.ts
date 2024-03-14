@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import {
   ConflictException,
   Injectable,
-  UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -48,11 +48,11 @@ export class UserService {
       where: { email },
     });
     if (_.isNil(user)) {
-      throw new UnauthorizedException('이메일을 확인해주세요.');
+      throw new NotFoundException('이메일을 확인해주세요.');
     }
 
     if (!(await compare(password, user.password))) {
-      throw new UnauthorizedException('비밀번호를 확인해주세요.');
+      throw new NotFoundException('비밀번호를 확인해주세요.');
     }
 
     const payload = { email, sub: user.id, is_admin: user.is_admin };
