@@ -7,12 +7,7 @@ import { LoginDto } from './dto/login.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
-
-import { UseFilters } from '@nestjs/common';
-import { HttpExceptionFilter } from '../filters/http-exception.filter';
-
 @Controller('user')
-@UseFilters(new HttpExceptionFilter())
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

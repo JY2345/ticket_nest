@@ -35,6 +35,11 @@ export class ShowController {
     return this.showService.findOne(+id);
   }
 
+  @Get('seats-in-show/:id')
+  findAvailableSeats(@Param('id') id: string) {
+    return this.showService.findAvailableSeats(+id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateShowDto: UpdateShowDto) {
     return this.showService.update(+id, updateShowDto);

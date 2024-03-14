@@ -12,12 +12,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
-    const exceptionResponse = exception.getResponse();
 
     let message = exception.message;
 
+    const exceptionResponse = exception.getResponse();
     if (typeof exceptionResponse === 'object') {
       message = (exceptionResponse as any).message;
+    }
+
+    if (exception instanceof UnauthorizedException) {
+      message = "로그인을 해주세요!";
     }
 
     response.status(status).json({

@@ -66,6 +66,7 @@ export class Seat {
 
   @ManyToOne(() => Show, (show) => show.seats)
   show: Show;
+
   
 }
 
