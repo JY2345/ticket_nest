@@ -35,11 +35,21 @@ export class UserController {
     );
   }
 
+  /**
+   * 로그인
+   * @param loginDto 
+   * @returns 
+   */
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
     return await this.userService.login(loginDto.email, loginDto.password);
   }
 
+  /**
+   * 회원 1명 이메일/포인트 찾기
+   * @param user 
+   * @returns 
+   */
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth('access-token')
   @Get('email')
