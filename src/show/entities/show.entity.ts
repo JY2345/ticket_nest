@@ -6,8 +6,7 @@ import {
   ManyToOne,
   Index,
 } from 'typeorm';
-import { Reservation } from '../../reservation/entities/reservation.entity'; 
-
+import { Reservation } from '../../reservation/entities/reservation.entity';
 
 @Entity({
   name: 'shows',
@@ -21,7 +20,7 @@ export class Show {
   show_name: string;
 
   @Column({ type: 'varchar', nullable: false })
-  show_info : string;
+  show_info: string;
 
   @Column({ type: 'varchar', nullable: true })
   venue: string;
@@ -33,10 +32,10 @@ export class Show {
   image: string;
 
   @Column({ type: 'boolean', default: false })
-  is_free_seating: boolean; 
+  is_free_seating: boolean;
 
   @Column({ type: 'int', nullable: true })
-  free_seating_price: number; 
+  free_seating_price: number;
 
   @OneToMany(() => ShowDate, (showDate) => showDate.show, {
     cascade: true,
@@ -46,9 +45,8 @@ export class Show {
   @OneToMany(() => Seat, (seat) => seat.show)
   seats: Seat[];
 
-  @OneToMany(() => Reservation, reservation => reservation.show)
-reservations: Reservation[];
-
+  @OneToMany(() => Reservation, (reservation) => reservation.show)
+  reservations: Reservation[];
 }
 @Entity({ name: 'seats' })
 export class Seat {
@@ -66,8 +64,6 @@ export class Seat {
 
   @ManyToOne(() => Show, (show) => show.seats)
   show: Show;
-
-  
 }
 
 @Entity({

@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Reservation } from '../../reservation/entities/reservation.entity'; 
+import { Reservation } from '../../reservation/entities/reservation.entity';
 @Index('email', ['email'], { unique: true })
 @Entity({
   name: 'users',
@@ -26,6 +26,6 @@ export class User {
   @Column({ type: 'boolean', nullable: false, default: false })
   is_admin: boolean;
 
-  @OneToMany(() => Reservation, reservation => reservation.user)
-reservations: Reservation[];
+  @OneToMany(() => Reservation, (reservation) => reservation.user)
+  reservations: Reservation[];
 }
