@@ -9,7 +9,10 @@ export class CreateReservationDto {
   @IsNotEmpty({ message: '공연 정보를 찾을 수 없습니다.' })
   show_id: number;
 
-  @IsDateString({}, { message: '예약 시간을 올바른 날짜 형식으로 입력해주세요.' })
+  @IsDateString(
+    {},
+    { message: '예약 시간을 올바른 날짜 형식으로 입력해주세요.' },
+  )
   reservation_time: Date;
 
   @IsString()

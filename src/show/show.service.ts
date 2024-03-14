@@ -76,7 +76,7 @@ export class ShowService {
       grade: seat.grade,
       price: seat.price,
     }));
-  
+
     return availableSeats;
   }
 

@@ -21,7 +21,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     if (exception instanceof UnauthorizedException) {
-      message = "로그인을 해주세요!";
+      message = '로그인을 해주세요!';
     }
 
     response.status(status).json({

@@ -1,5 +1,13 @@
 import { Type } from 'class-transformer';
-import { ValidateNested, IsString, IsNotEmpty, IsArray, IsBoolean, IsNumber, IsOptional } from 'class-validator';
+import {
+  ValidateNested,
+  IsString,
+  IsNotEmpty,
+  IsArray,
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+} from 'class-validator';
 
 class ShowDateDto {
   @IsNotEmpty()
@@ -36,11 +44,11 @@ export class CreateShowDto {
   image: string;
 
   @IsBoolean()
-  is_free_seating : boolean;
+  is_free_seating: boolean;
 
   @IsOptional()
   @IsNumber({}, { message: '자유석 가격을 입력하세요.' })
-  free_seating_price?: number; 
+  free_seating_price?: number;
 
   @IsArray()
   @ValidateNested({ each: true })
