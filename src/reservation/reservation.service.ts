@@ -64,6 +64,10 @@ export class ReservationService {
 
       let ticketPrice = show.is_free_seating ? show.free_seating_price : seat?.price;
 
+      if (ticketPrice > 50000) {
+        throw new ConflictException('1석당 최대 5만 포인트를 초과할 수 없습니다.');
+      }
+      
       if (!ticketPrice) {
         throw new Error('티켓 가격을 결정할 수 없습니다.');
       }

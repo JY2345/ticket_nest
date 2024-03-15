@@ -23,7 +23,6 @@ export class UserService {
   async signup(
     email: string,
     password: string,
-    point: number,
     is_admin: boolean,
   ) {
     const existingUser = await this.findByEmail(email);
@@ -32,12 +31,12 @@ export class UserService {
         '이미 해당 이메일로 가입된 사용자가 있습니다!',
       );
     }
-
+    const firstPoint = 1000000;
     const hashedPassword = await hash(password, 10);
     await this.userRepository.save({
       email,
       password: hashedPassword,
-      point,
+      point : firstPoint,
       is_admin,
     });
   }

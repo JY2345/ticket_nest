@@ -26,13 +26,6 @@ export class CreateUserDto extends PickType(User, [
   password: string;
 
   /**
-   * 포인트
-   * @example 1000000
-   */
-  @IsNumber({}, { message: '포인트를 숫자로 입력해주세요.' })
-  point: number;
-
-  /**
    * 관리자 여부
    * @example false
    */
