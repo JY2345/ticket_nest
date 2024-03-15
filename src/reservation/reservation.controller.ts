@@ -27,6 +27,7 @@ export class ReservationController {
    * @returns 
    */
   @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth('access-token')
   @Post('reserve')
   create(
     @UserInfo() user: User,
