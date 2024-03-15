@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Show, Seat } from './entities/show.entity';
@@ -18,23 +18,33 @@ export class ShowService {
   ) {}
 
   async registShow(createShowDto: CreateShowDto): Promise<Show> {
-    const show = this.showRepository.create({
-      ...createShowDto,
-      dates: createShowDto.dates.map((date) => ({ ...date })),
-    });
+    return await this.showRepository.manager.transaction(async (transactionalEntityManager) => {
+      if (createShowDto.is_free_seating && createShowDto.free_seating_price > 50000) {
+        throw new ConflictException('자유석 가격은 50000을 초과할 수 없습니다.');
+      }
   
-    await this.showRepository.save(show);
+      const show = this.showRepository.create({
+        ...createShowDto,
+        dates: createShowDto.dates.map((date) => ({ ...date })),
+      });
+      await transactionalEntityManager.save(show);
+    
+      if (!createShowDto.is_free_seating) {
+        const overpricedSeat = createShowDto.seats.find(seat => seat.price > 50000);
+        if (overpricedSeat) {
+          throw new ConflictException('등록할 좌석 가격은 50000을 초과할 수 없습니다.');
+        }
   
-    if (!createShowDto.is_free_seating) {
-      const seats = createShowDto.seats.map((seat) => this.seatRepository.create({
-        ...seat,
-        show, 
-      }));
+        const seats = createShowDto.seats.map((seat) => this.seatRepository.create({
+          ...seat,
+          show, 
+        }));
   
-      await this.seatRepository.save(seats);
-    }
-  
-    return show;
+        await transactionalEntityManager.save(seats);
+      }
+    
+      return show;
+    }); 
   }
 
   async findAll(show_name?: string) {
